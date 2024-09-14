@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>芙理日本代購計算</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        button {
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: red;
+        }
+        /* Example section */
+        .example {
+            margin-top: 30px;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .example p {
+            margin: 0;
+            line-height: 1.5;
+        }
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #555;
+        }
+        footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>芙理日本代購計算</h1>
+
+    <label for="originalPrice">單件商品日幣價格 (¥):</label>
+    <input type="number" id="originalPrice" placeholder="請輸入商品日幣價格" required>
+
+    <label for="discount">品牌舉辦打折活動:</label>
+    <input type="number" id="discount" placeholder="比如打3折請填寫0.3，沒有折扣的可跳過">
+
+    <label for="itemType">商品狀態:</label>
+    <select id="itemType" required>
+        <option value="inStock">現貨</option>
+        <option value="preOrder15">預購商品 (15天內)</option>
+        <option value="preOrder1530">預購商品 (15-30天)</option>
+        <option value="preOrder30Plus">預購商品 (超過30天)</option>
+    </select>
+
+    <button onclick="calculateFinalPrice()">計算($)</button>
+
+    <div class="result" id="finalPrice"></div>
+
+    <!-- Example Section -->
+    <div class="example">
+        <h3>填寫範例:</h3>
+        <p>以夢展望6折活動為例，</p>
+        <p>單件商品在網頁顯示的價格是¥4000:</p>
+        <p>商品日幣價格: ¥4000</p>
+        <p>活動額外打折: 0.6</p>
+        <p>商品狀態: 現貨</p>
+        <p>按"計算($)"後可得到委託此商品的台幣價格</p>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <p>此服務由 <a href="https://www.facebook.com/furi.shopping" target="_blank">芙理日本代購</a> 提供</p>
+</footer>
+
+<script>
+    function calculateFinalPrice() {
+        // Get input values
+        var originalPrice = parseFloat(document.getElementById("originalPrice").value);
+        var discount = parseFloat(document.getElementById("discount").value);
+        var itemType = document.getElementById("itemType").value;
+
+        // Validate inputs
+        if (isNaN(originalPrice) || originalPrice <= 0) {
+            document.getElementById("finalPrice").innerHTML = "請輸入商品日幣價格 (¥)";
+            return;
+        }
+        if (discount > 1) {
+            document.getElementById("finalPrice").innerHTML = "折扣格式輸入錯誤，比如打3折應該要填寫0.3";
+            return;
+        }
+        // If no discount input, default to 1 (no discount)
+        if (isNaN(discount)) {
+            discount = 1; // no discount
+        }
+
+        // If discount is less than 1, treat it as a multiplier (e.g. 0.8)
+        var finalPriceInYen = Math.ceil(originalPrice * discount);
+
+        // Determine the exchange rate based on the final price in yen
+        var exchangeRate;
+        var additionalFee = 0;
+        if (finalPriceInYen <= 2000) {
+            exchangeRate = 0.3;
+        } else if (finalPriceInYen <= 3000) {
+            exchangeRate = 0.26;
+        } else if (finalPriceInYen <= 6000) {
+            exchangeRate = 0.25;
+        } else {
+            exchangeRate = 0.245;
+            additionalFee += 30; // Additional $30 for prices over ¥6000
+        }
+        // Additional fee for preorder product
+        if (itemType === "preOrder15") {
+            additionalFee += 10;  
+            exchangeRate += 0.01;
+        } else if (itemType === "preOrder1530") {
+            additionalFee += 20;
+            exchangeRate += 0.02;
+        } else if (itemType === "preOrder30Plus") {
+            additionalFee += 30;
+            exchangeRate += 0.03;
+        }
+        // Calculate final price in dollars using the exchange rate and round up (ceiling)
+        var finalPriceInDollars = Math.ceil(finalPriceInYen * exchangeRate + additionalFee);
+
+        // Display the result in red
+        document.getElementById("finalPrice").innerHTML = "委託價格為台幣: $" + finalPriceInDollars + " + 二補國際運費";
+    }
+</script>
+
+</body>
+</html>

@@ -39,7 +39,12 @@
             font-weight: bold;
             color: red;
         }
-        /* Example section */
+        .warning {
+            margin-top: 20px;
+            font-size: 1em;
+            font-weight: bold;
+            color: #ff9900;
+        }
         .example {
             margin-top: 30px;
             background-color: #f9f9f9;
@@ -88,6 +93,11 @@
     <button onclick="calculateFinalPrice()">計算($)</button>
 
     <div class="result" id="finalPrice"></div>
+
+    <!-- Warning Section for Heavy Items -->
+    <div class="warning">
+        <p>請注意：本計算工具主要針對一般服裝類商品。若為超重商品如洗衣粉等等，將可能調整委託費用，具體費用視情況而定。</p>
+    </div>
 
     <!-- Example Section -->
     <div class="example">

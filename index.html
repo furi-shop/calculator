@@ -168,7 +168,7 @@
         var finalPriceInDollars = Math.ceil(finalPriceInYen * exchangeRate + additionalFee);
         // if finalPriceInDollars - finalPriceInYen*finalPriceInDollars <100, finalPriceInDollars = finalPriceInYen*finalPriceInDollars + 100
         if (finalPriceInDollars - finalPriceInYen * real_exchangeRate < 100) {
-            finalPriceInDollars = finalPriceInYen * real_exchangeRate + 100;
+            finalPriceInDollars = Math.ceil(finalPriceInYen * real_exchangeRate) + 100;
         }
 
         // Display the result in red

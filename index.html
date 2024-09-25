@@ -10,20 +10,21 @@
             margin: 50px;
         }
         .container {
-            max-width: 900px; /* Increased max-width to accommodate three columns */
+            max-width: 900px;
             margin: 0 auto;
         }
         .form-group {
             display: flex;
-            gap: 10px; /* Spacing between columns */
-            flex-wrap: wrap; /* Ensure the layout adjusts on smaller screens */
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
         }
         .form-group > div {
-            flex: 1; /* Make all items take equal space */
-            min-width: 100px; /* Ensure items don't shrink too much */
+            flex: 1;
+            min-width: 100px;
         }
         .form-group .long {
-            flex: 2; /* Make the first two columns longer */
+            flex: 2;
         }
         label {
             display: block;
@@ -32,7 +33,6 @@
         input, select {
             width: 100%;
             padding: 8px;
-            margin-bottom: 10px;
             box-sizing: border-box;
         }
         button {
@@ -41,6 +41,7 @@
             color: white;
             border: none;
             cursor: pointer;
+            margin-top: 10px;
         }
         button:hover {
             background-color: #45a049;
@@ -88,28 +89,31 @@
 <div class="container">
     <h1>芙理日本代購計算</h1>
 
-    <div class="form-group">
-        <div class="long">
-            <label for="originalPrice"><span class="padded-label">單件商品日幣價格(¥):&nbsp;</span></label>
-            <input type="number" id="originalPrice" placeholder="日幣價格(純數字)" required>
-        </div>
+    <div id="product-container">
+        <div class="form-group">
+            <div class="long">
+                <label for="originalPrice"><span class="padded-label">單件商品日幣價格(¥):&nbsp;</span></label>
+                <input type="number" name="originalPrice" placeholder="日幣價格(純數字)" required>
+            </div>
 
-        <div class="long">
-            <label for="discount"><span class="padded-label">品牌舉辦打折活動(可略):</span></label>
-            <input type="number" id="discount" placeholder="可略，3折填0.3">
-        </div>
+            <div class="long">
+                <label for="discount"><span class="padded-label">品牌舉辦打折活動(可略):</span></label>
+                <input type="number" name="discount" placeholder="可略，3折填0.3">
+            </div>
 
-        <div>
-            <label for="itemType"><span class="padded-label">商品狀態:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></label> 
-            <select id="itemType" required>
-                <option value="inStock">現貨</option>
-                <option value="preOrder15">預購商品 (15天內)</option>
-                <option value="preOrder1530">預購商品 (15-30天)</option>
-                <option value="preOrder30Plus">預購商品 (超過30天)</option>
-            </select>
+            <div>
+                <label for="itemType"><span class="padded-label">商品狀態:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></label> 
+                <select name="itemType" required>
+                    <option value="inStock">現貨</option>
+                    <option value="preOrder15">預購商品 (15天內)</option>
+                    <option value="preOrder1530">預購商品 (15-30天)</option>
+                    <option value="preOrder30Plus">預購商品 (超過30天)</option>
+                </select>
+            </div>
         </div>
     </div>
 
+    <button onclick="addProductRow()">增加商品</button>
     <button onclick="calculateFinalPrice()">計算($)</button>
 
     <div class="result" id="finalPrice"></div>
@@ -137,61 +141,83 @@
 </footer>
 
 <script>
+    function addProductRow() {
+        // Create a new form group
+        const productContainer = document.getElementById('product-container');
+        const newGroup = document.createElement('div');
+        newGroup.className = 'form-group';
+
+        // Add input fields without labels
+        newGroup.innerHTML = `
+            <div class="long">
+                <input type="number" name="originalPrice" placeholder="日幣價格(純數字)" required>
+            </div>
+            <div class="long">
+                <input type="number" name="discount" placeholder="可略，3折填0.3">
+            </div>
+            <div>
+                <select name="itemType" required>
+                    <option value="inStock">現貨</option>
+                    <option value="preOrder15">預購商品 (15天內)</option>
+                    <option value="preOrder1530">預購商品 (15-30天)</option>
+                    <option value="preOrder30Plus">預購商品 (超過30天)</option>
+                </select>
+            </div>
+        `;
+
+        // Append the new group to the container
+        productContainer.appendChild(newGroup);
+    }
+
     function calculateFinalPrice() {
-        // Get input values
-        var originalPrice = parseFloat(document.getElementById("originalPrice").value);
-        var discount = parseFloat(document.getElementById("discount").value);
-        var itemType = document.getElementById("itemType").value;
-        var real_exchangeRate = 0.23;
-        // Validate inputs
-        if (isNaN(originalPrice) || originalPrice <= 0) {
-            document.getElementById("finalPrice").innerHTML = "請輸入商品日幣價格 (¥)";
-            return;
-        }
-        if (discount > 1) {
-            document.getElementById("finalPrice").innerHTML = "折扣格式輸入錯誤，比如打3折應該要填寫0.3";
-            return;
-        }
-        // If no discount input, default to 1 (no discount)
-        if (isNaN(discount)) {
-            discount = 1; // no discount
-        }
+        const products = document.querySelectorAll('.form-group');
+        let totalCost = 0;
+        const real_exchangeRate = 0.23;
 
-        // If discount is less than 1, treat it as a multiplier (e.g. 0.8)
-        var finalPriceInYen = Math.ceil(originalPrice * discount);
+        products.forEach(group => {
+            const originalPrice = parseFloat(group.querySelector('input[name="originalPrice"]').value);
+            const discount = parseFloat(group.querySelector('input[name="discount"]').value) || 1;
+            const itemType = group.querySelector('select[name="itemType"]').value;
 
-        // Determine the exchange rate based on the final price in yen
-        var exchangeRate;
-        var additionalFee = 0;
-        if (finalPriceInYen <= 2000) {
-            exchangeRate = 0.3;
-        } else if (finalPriceInYen <= 6000) {
-            exchangeRate = 0.25;
-            additionalFee += 30;
-        } else {
-            exchangeRate = 0.25;
-            additionalFee += 35; // Additional $30 for prices over ¥6000
-        }
-        // Additional fee for preorder product
-        if (itemType === "preOrder15") {
-            additionalFee += 10;  
-            exchangeRate += 0.01;
-        } else if (itemType === "preOrder1530") {
-            additionalFee += 20;
-            exchangeRate += 0.02;
-        } else if (itemType === "preOrder30Plus") {
-            additionalFee += 30;
-            exchangeRate += 0.03;
-        }
-        // Calculate final price in dollars using the exchange rate and round up (ceiling)
-        var finalPriceInDollars = Math.ceil(finalPriceInYen * exchangeRate + additionalFee);
-        // if finalPriceInDollars - finalPriceInYen*finalPriceInDollars <100, finalPriceInDollars = finalPriceInYen*finalPriceInDollars + 100
-        if (finalPriceInDollars - finalPriceInYen * real_exchangeRate < 100) {
-            finalPriceInDollars = Math.ceil(finalPriceInYen * real_exchangeRate) + 100;
-        }
+            if (isNaN(originalPrice) || originalPrice <= 0) {
+                document.getElementById("finalPrice").innerHTML = "請輸入商品日幣價格 (¥)";
+                return;
+            }
 
-        // Display the result in red
-        document.getElementById("finalPrice").innerHTML = "委託價格為台幣: $" + finalPriceInDollars + " + 二補國際運費";
+            const finalPriceInYen = Math.ceil(originalPrice * discount);
+
+            let exchangeRate;
+            let additionalFee = 0;
+            if (finalPriceInYen <= 2000) {
+                exchangeRate = 0.3;
+            } else if (finalPriceInYen <= 6000) {
+                exchangeRate = 0.25;
+                additionalFee += 30;
+            } else {
+                exchangeRate = 0.25;
+                additionalFee += 35;
+            }
+
+            if (itemType === "preOrder15") {
+                additionalFee += 10;
+                exchangeRate += 0.01;
+            } else if (itemType === "preOrder1530") {
+                additionalFee += 20;
+                exchangeRate += 0.02;
+            } else if (itemType === "preOrder30Plus") {
+                additionalFee += 30;
+                exchangeRate += 0.03;
+            }
+
+            let finalPriceInDollars = Math.ceil(finalPriceInYen * exchangeRate + additionalFee);
+            if (finalPriceInDollars - finalPriceInYen * real_exchangeRate < 100) {
+                finalPriceInDollars = Math.ceil(finalPriceInYen * real_exchangeRate) + 100;
+            }
+
+            totalCost += finalPriceInDollars;
+        });
+
+        document.getElementById("finalPrice").innerHTML = "委託價格為台幣: $" + totalCost + " + 二補國際運費";
     }
 </script>
 

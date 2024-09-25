@@ -149,9 +149,10 @@
             exchangeRate = 0.26;
         } else if (finalPriceInYen <= 6000) {
             exchangeRate = 0.25;
+            additionalFee += 30;
         } else {
-            exchangeRate = 0.245;
-            additionalFee += 30; // Additional $30 for prices over ¥6000
+            exchangeRate = 0.25;
+            additionalFee += 35; // Additional $30 for prices over ¥6000
         }
         // Additional fee for preorder product
         if (itemType === "preOrder15") {

@@ -122,7 +122,7 @@
         var originalPrice = parseFloat(document.getElementById("originalPrice").value);
         var discount = parseFloat(document.getElementById("discount").value);
         var itemType = document.getElementById("itemType").value;
-
+        var real_exchangeRate = 0.23;
         // Validate inputs
         if (isNaN(originalPrice) || originalPrice <= 0) {
             document.getElementById("finalPrice").innerHTML = "請輸入商品日幣價格 (¥)";
@@ -166,6 +166,10 @@
         }
         // Calculate final price in dollars using the exchange rate and round up (ceiling)
         var finalPriceInDollars = Math.ceil(finalPriceInYen * exchangeRate + additionalFee);
+        // if finalPriceInDollars - finalPriceInYen*finalPriceInDollars <100, finalPriceInDollars = finalPriceInYen*finalPriceInDollars + 100
+        if (finalPriceInDollars - finalPriceInYen * real_exchangeRate < 100) {
+            finalPriceInDollars = finalPriceInYen * real_exchangeRate + 100;
+        }
 
         // Display the result in red
         document.getElementById("finalPrice").innerHTML = "委託價格為台幣: $" + finalPriceInDollars + " + 二補國際運費";

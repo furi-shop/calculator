@@ -105,6 +105,7 @@
                     <option value="preOrder15">預購商品 (15天內)</option>
                     <option value="preOrder1530">預購商品 (15-30天)</option>
                     <option value="preOrder30Plus">預購商品 (超過30天)</option>
+                    <option value="saleSeason">折扣季特殊計價</option>
                 </select>
             </div>
         </div>
@@ -210,7 +211,12 @@
             }
 
             let finalPriceInDollars = Math.ceil(finalPriceInYen * exchangeRate + additionalFee);
-            if (finalPriceInDollars - finalPriceInYen * real_exchangeRate < 100) {
+            if (itemType === "saleSeason") {
+                if (finalPriceInDollars - finalPriceInYen * real_exchangeRate < 200) {
+                    finalPriceInDollars = Math.ceil(finalPriceInYen * real_exchangeRate) + 200;
+                }
+            }
+            else if (finalPriceInDollars - finalPriceInYen * real_exchangeRate < 100) {
                 finalPriceInDollars = Math.ceil(finalPriceInYen * real_exchangeRate) + 100;
             }
 

@@ -222,6 +222,13 @@
 
             totalCost += finalPriceInDollars;
         });
+        
+        # 現在totalCost要加上手續費，手續費是totalCost * 0.0105無條件進位，不滿15則為15
+        let serviceFee = Math.ceil(totalCost * 0.0105);
+        if (serviceFee < 15) {
+            serviceFee = 15;
+        }
+        totalCost += serviceFee;
 
         document.getElementById("finalPrice").innerHTML = "請勿直接匯款!仍需等我方回覆報價!!<br>預估價格為台幣: $" + totalCost + " + 二補國際運費";
     }

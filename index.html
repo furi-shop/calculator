@@ -217,7 +217,7 @@
                     finalPriceInDollars = Math.ceil(finalPriceInYen * real_exchangeRate) + 200;
                 }
                 else {
-                    finalPriceInDollars = Math.ceil(finalPriceInYen * 0.26 + additionalFee)
+                    finalPriceInDollars = Math.ceil(finalPriceInYen * 0.26)
                 }
             }
             else if (finalPriceInDollars - finalPriceInYen * real_exchangeRate < 100) {

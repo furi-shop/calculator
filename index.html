@@ -237,12 +237,7 @@
         if (serviceFee < 15) {
             serviceFee = 15;
         }
-        
-        if (itemType === "pium") {
-            totalCost += 0;
-        } else {
-            totalCost += serviceFee;
-        }
+        totalCost += serviceFee;
 
         document.getElementById("finalPrice").innerHTML = "預估價格為台幣: $" + totalCost + " + 二補國際運費";
     }

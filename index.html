@@ -82,11 +82,27 @@
             font-size: 0.9em;
             color: #555;
         }
-        h1 a i {
-            margin-right: 5px;
-            font-size: 1.2em;
+        h1 {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* space between title and icons */
+            font-size: 2em;
+        }
+        h1 a {
+            text-decoration: none; /* no underline */
+            color: #4CAF50; /* icon color */
+        }
+        
+        h1 a:hover {
+            color: #388E3C; /* darker green on hover */
+        }
+        
+        h1 i {
+            font-size: 0.9em; /* scale to match text */
             vertical-align: middle;
         }
+
+
     </style>
 </head>
 <body>

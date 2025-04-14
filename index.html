@@ -255,17 +255,17 @@
             totalCost += finalPriceInDollars;
         });
         
-        if (totalCost <= 0) {
-            document.getElementById("finalPrice").innerHTML = "請輸入商品日幣價格 (¥)";
-            return;
-        }
         let serviceFee = Math.ceil(totalCost * 0.0105);
         if (serviceFee < 15) {
             serviceFee = 15;
         }
-        totalCost += serviceFee;
-        
-        document.getElementById("finalPrice").innerHTML = "預估價格為台幣: $" + totalCost + " + 二補國際運費";
+        totalCost_fee = totalCost+serviceFee;
+
+        if (totalCost <= 0) {
+            document.getElementById("finalPrice").innerHTML = "請輸入商品日幣價格 (¥)";
+        } else {
+            document.getElementById("finalPrice").innerHTML = "預估價格為台幣: $" + totalCost_fee + " + 二補國際運費";
+        }
     }
 </script>
 

@@ -213,7 +213,9 @@
             const originalPrice = parseFloat(group.querySelector('input[name="originalPrice"]').value);
             const discount = parseFloat(group.querySelector('input[name="discount"]').value) || 1;
             const itemType = group.querySelector('select[name="itemType"]').value;
-
+            if (isNaN(originalPrice) || originalPrice <= 0) {
+                return;
+            }
             const finalPriceInYen = Math.ceil(originalPrice * discount);
 
             let exchangeRate;

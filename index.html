@@ -243,8 +243,8 @@
 
             let finalPriceInDollars = Math.ceil(finalPriceInYen * exchangeRate + additionalFee);
             if (itemType === "saleSeason") {
-                if (finalPriceInDollars - finalPriceInYen * real_exchangeRate < 200) {
-                    finalPriceInDollars = Math.ceil(finalPriceInYen * real_exchangeRate) + 200;
+                if (finalPriceInDollars - finalPriceInYen * real_exchangeRate < 150) {
+                    finalPriceInDollars = Math.ceil(finalPriceInYen * real_exchangeRate) + 150;
                 }
                 else {
                     finalPriceInDollars = Math.ceil(finalPriceInYen * 0.265)

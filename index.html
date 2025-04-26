@@ -223,11 +223,11 @@
             if (finalPriceInYen <= 2000) {
                 exchangeRate = 0.3;
             } else if (finalPriceInYen <= 6000) {
-                exchangeRate = 0.265;
-                additionalFee += 30;
+                exchangeRate = 0.268;
+                additionalFee += 40;
             } else {
                 exchangeRate = 0.265;
-                additionalFee += 30;
+                additionalFee += 35;
             }
 
             if (itemType === "preOrder15") {
@@ -237,7 +237,7 @@
             } else if (itemType === "preOrder30Plus") {
                 exchangeRate += 0.015;
             } else if (itemType === "pium") {
-                exchangeRate = 0.258;
+                exchangeRate = 0.26;
                 additionalFee = 0;
             }
 

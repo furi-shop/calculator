@@ -223,10 +223,10 @@
             if (finalPriceInYen <= 2000) {
                 exchangeRate = 0.3;
             } else if (finalPriceInYen <= 6000) {
-                exchangeRate = 0.268;
+                exchangeRate = 0.26;
                 additionalFee += 40;
             } else {
-                exchangeRate = 0.265;
+                exchangeRate = 0.26;
                 additionalFee += 35;
             }
 
@@ -237,7 +237,7 @@
             } else if (itemType === "preOrder30Plus") {
                 exchangeRate += 0.015;
             } else if (itemType === "pium") {
-                exchangeRate = 0.26;
+                exchangeRate = 0.255;
                 additionalFee = 0;
             }
 
@@ -247,7 +247,7 @@
                     finalPriceInDollars = Math.ceil(finalPriceInYen * real_exchangeRate) + 150;
                 }
                 else {
-                    finalPriceInDollars = Math.ceil(finalPriceInYen * 0.265)
+                    finalPriceInDollars = Math.ceil(finalPriceInYen * 0.255)
                 }
             }
             else if (finalPriceInDollars - finalPriceInYen * real_exchangeRate < 100) {

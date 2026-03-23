@@ -1,275 +1,105 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>芙理日本代購計算</title>
-    <style>
-        a {
-            color: #4CAF50; /* 自定義連結顏色 */
-            text-decoration: none; /* 移除底線 */
-        }
-        a:hover {
-            color: #388E3C; /* 滑鼠懸停時的顏色 */
-            text-decoration: underline; /* 滑鼠懸停時顯示底線 */
-        }
-        body {
-            font-family: Arial, sans-serif;
-            margin: 10px;
-        }
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        .form-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-            flex-wrap: nowrap; /* Prevent wrapping */
-        }
-        .form-group > div {
-            flex: 1 1 30%; /* Ensure all columns stay in one row */
-            min-width: 0; /* Allow items to shrink properly */
-        }
-        .form-group .long {
-            flex: 2 1 35%; /* Set flex grow and basis to allow space distribution */
-        }
-        label {
-            display: block;
-            margin: 10px 0 5px;
-        }
-        input, select {
-            width: 100%;
-            padding: 8px;
-            box-sizing: border-box;
-        }
-        button {
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .result {
-            margin-top: 20px;
-            font-size: 1.2em;
-            font-weight: bold;
-            color: red;
-        }
-        .warning {
-            margin-top: 20px;
-            color: #000000;
-        }
-        .example {
-            margin-top: 30px;
-            background-color: #f9f9f9;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .example p {
-            margin: 0;
-            line-height: 1.5;
-        }
-        footer {
-            margin-top: 50px;
-            text-align: center;
-            font-size: 0.9em;
-            color: #555;
-        }
-        h1 {
-            display: flex;
-            align-items: center;
-            gap: 10px; /* space between title and icons */
-            font-size: 2em;
-        }
-        h1 a {
-            text-decoration: none; /* no underline */
-            color: #4CAF50; /* icon color */
-        }
-        
-        h1 a:hover {
-            color: #388E3C; /* darker green on hover */
-        }
-        
-        h1 i {
-            font-size: 0.9em; /* scale to match text */
-            vertical-align: middle;
-        }
-
-
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <h1>
-        芙理日本代購計算
-        <a href="https://www.facebook.com/furi.shopping" target="_blank">
-            <i class="fab fa-facebook"></i>
-        </a>
-        <a href="https://line.me/ti/g2/VZdlTAmbMHDaWFsmN0U8k-5Wo1wxPgoP5bsfGA?utm_source=invitation&utm_medium=link_copy&utm_campaign=default" target="_blank">
-            <i class="fab fa-line"></i>
-        </a>
-    </h1>
-    <div id="product-container">
-        <div class="form-group">
-            <div class="long">
-                <label for="originalPrice"><span class="padded-label">單件商品(¥):&nbsp;</span></label>
-                <input type="number" name="originalPrice" placeholder="日幣價格(純數字)" required>
-            </div>
-
-            <div class="long">
-                <label for="discount"><span class="padded-label">打折活動(可略):</span></label>
-                <input type="number" name="discount" placeholder="可略，3折填0.3">
-            </div>
-
-            <div>
-                <label for="itemType"><span class="padded-label">商品狀態:&nbsp;&nbsp;</span></label> 
-                <select name="itemType" required>
-                    <option value="inStock">現貨</option>
-                    <option value="preOrder15">預購商品 (15天內)</option>
-                    <option value="preOrder1530">預購商品 (15-30天)</option>
-                    <option value="preOrder30Plus">預購商品 (超過30天)</option>
-                    <option value="saleSeason">折扣季特殊計價</option>
-                    <option value="pium">長期顧客優惠匯率(限使用品牌Andmary/Amavel)</option>
-                </select>
-            </div>
-        </div>
-    </div>
-
-    <button onclick="addProductRow()">增加商品</button>
-    <button onclick="calculateFinalPrice()">計算($)</button>
-
-    <div class="result" id="finalPrice"></div>
-
-    <!-- Warning Section for Heavy Items -->
-    <div class="warning">
-        <p>1. 如欲購買複數商品，可按"增加商品"按鈕增加欄位，計算的結果會是所有商品加總</p>
-        <p>2. 委託方式: 私訊<a href="https://www.facebook.com/furi.shopping" target="_blank">芙理日本代購</a>傳「商品連結/尺寸/顏色(建議使用日文以減少誤解)」，如果是我方貼文分享之商品，截圖圈選即可。</p>
-        <p>3. 本計算工具主要針對一般服裝類商品。若為超重商品如洗衣粉等等，將可能調整委託費用，具體費用視情況而定。芙理代購保有最終決定權與最終解釋權。</p>
-        <p>4. 委託即代表已知悉同意<a href="https://furi-shop.github.io/rules/" target="_blank">委託規則</a>，不再另行提醒 </p>
-    </div>
-
-    <!-- Example Section -->
-    <div class="example">
-        <h3>填寫範例:</h3>
-        <p>以夢展望6折活動為例，</p>
-        <p>單件商品在網頁顯示的價格是¥4000:</p>
-        <p>商品日幣價格: 4000</p>
-        <p>活動額外打折: 0.6</p>
-        <p>商品狀態: 現貨</p>
-        <p>按"計算($)"後可得到委託此商品的台幣價格</p>
-    </div>
-</div>
-
-<!-- Footer -->
-<footer>
-    <p>此服務由 <a href="https://www.facebook.com/furi.shopping" target="_blank">芙理日本代購</a> 提供</p>
-</footer>
-
 <script>
     function addProductRow() {
-        // Create a new form group
         const productContainer = document.getElementById('product-container');
         const newGroup = document.createElement('div');
         newGroup.className = 'form-group';
-
-        // Add input fields without labels
         newGroup.innerHTML = `
-            <div class="long">
-                <input type="number" name="originalPrice" placeholder="日幣價格(純數字)" required>
-            </div>
-            <div class="long">
-                <input type="number" name="discount" placeholder="可略，3折填0.3">
-            </div>
+            <div class="long"><input type="number" name="originalPrice" placeholder="日幣價格" required></div>
+            <div class="long"><input type="number" name="discount" placeholder="3折填0.3"></div>
             <div>
                 <select name="itemType" required>
                     <option value="inStock">現貨</option>
-                    <option value="preOrder15">預購商品 (15天內)</option>
-                    <option value="preOrder1530">預購商品 (15-30天)</option>
-                    <option value="preOrder30Plus">預購商品 (超過30天)</option>
+                    <option value="cosmetic">彩妝類</option>
                     <option value="saleSeason">折扣季特殊計價</option>
-                    <option value="pium">長期顧客優惠匯率(限使用品牌Andmary/Amavel)</option>
+                    <option value="pium">Pium轉發分享優惠匯率</option>
                 </select>
-            </div>
-        `;
-
-        // Append the new group to the container
+            </div>`;
         productContainer.appendChild(newGroup);
     }
 
     function calculateFinalPrice() {
         const products = document.querySelectorAll('.form-group');
         let totalCost = 0;
+        let costSubjectToServiceFee = 0; // Track items that require the 1.05% fee
         const real_exchangeRate = 0.235;
 
         products.forEach(group => {
             const originalPrice = parseFloat(group.querySelector('input[name="originalPrice"]').value);
             const discount = parseFloat(group.querySelector('input[name="discount"]').value) || 1;
             const itemType = group.querySelector('select[name="itemType"]').value;
-            if (isNaN(originalPrice) || originalPrice <= 0) {
-                return;
-            }
-            const finalPriceInYen = Math.ceil(originalPrice * discount);
+            
+            if (isNaN(originalPrice) || originalPrice <= 0) return;
 
+            const finalPriceInYen = Math.ceil(originalPrice * discount);
             let exchangeRate;
             let additionalFee = 0;
-            if (finalPriceInYen <= 2000) {
-                exchangeRate = 0.3;
-            } else if (finalPriceInYen <= 6000) {
-                exchangeRate = 0.25;
-                additionalFee += 45;
-            } else {
-                exchangeRate = 0.25;
-                additionalFee += 35;
-            }
+            let skipMinCheck = false;
+            let skipServiceFee = false;
 
-            if (itemType === "preOrder15") {
-                exchangeRate += 0.005;
-            } else if (itemType === "preOrder1530") {
-                exchangeRate += 0.01;
-            } else if (itemType === "preOrder30Plus") {
-                exchangeRate += 0.015;
+            // 1. Logic for Cosmetic and Pium
+            if (itemType === "cosmetic") {
+                exchangeRate = 0.26;
+                additionalFee = 50;
+                skipMinCheck = true;
+                skipServiceFee = true;
             } else if (itemType === "pium") {
-                exchangeRate = 0.245;
+                exchangeRate = 0.22;
                 additionalFee = 0;
+                skipMinCheck = true;
+                skipServiceFee = true;
+            } else {
+                // Default logic for inStock and saleSeason
+                if (finalPriceInYen <= 2000) {
+                    exchangeRate = 0.3;
+                } else if (finalPriceInYen <= 6000) {
+                    exchangeRate = 0.25;
+                    additionalFee = 45;
+                } else {
+                    exchangeRate = 0.25;
+                    additionalFee = 35;
+                }
             }
 
+            // 2. Base TWD Calculation
             let finalPriceInDollars = Math.ceil(finalPriceInYen * exchangeRate + additionalFee);
+
+            // 3. Profit Buffer Logic
             if (itemType === "saleSeason") {
                 if (finalPriceInDollars - finalPriceInYen * real_exchangeRate < 150) {
                     finalPriceInDollars = Math.ceil(finalPriceInYen * real_exchangeRate) + 150;
+                } else {
+                    finalPriceInDollars = Math.ceil(finalPriceInYen * 0.255);
                 }
-                else {
-                    finalPriceInDollars = Math.ceil(finalPriceInYen * 0.255)
+            } else if (!skipMinCheck) {
+                if (finalPriceInDollars - finalPriceInYen * real_exchangeRate < 100) {
+                    finalPriceInDollars = Math.ceil(finalPriceInYen * real_exchangeRate) + 100;
                 }
-            }
-            else if (finalPriceInDollars - finalPriceInYen * real_exchangeRate < 100) {
-                finalPriceInDollars = Math.ceil(finalPriceInYen * real_exchangeRate) + 100;
             }
 
             totalCost += finalPriceInDollars;
+            
+            // Only add to fee base if it's NOT cosmetic or pium
+            if (!skipServiceFee) {
+                costSubjectToServiceFee += finalPriceInDollars;
+            }
         });
         
-        let serviceFee = Math.ceil(totalCost * 0.0105);
-        if (serviceFee < 15) {
-            serviceFee = 15;
+        // 4. Service Fee Calculation
+        let serviceFee = 0;
+        if (costSubjectToServiceFee > 0) {
+            serviceFee = Math.ceil(costSubjectToServiceFee * 0.0105);
+            if (serviceFee < 15) {
+                serviceFee = 15;
+            }
         }
-        totalCost_fee = totalCost+serviceFee;
+        
+        const totalWithFee = totalCost + serviceFee;
 
+        const resultDiv = document.getElementById("finalPrice");
         if (totalCost <= 0) {
-            document.getElementById("finalPrice").innerHTML = "請輸入商品日幣價格 (¥)";
+            resultDiv.innerHTML = "請輸入商品日幣價格 (¥)";
         } else {
-            document.getElementById("finalPrice").innerHTML = "預估價格為台幣: $" + totalCost_fee + " + 二補國際運費";
+            resultDiv.innerHTML = "預估價格為台幣: $" + totalWithFee + " + 二補國際運費";
         }
     }
 </script>
-
-</body>
-</html>
